@@ -3,6 +3,7 @@ using NUnit.Framework;
 using Moq;
 using MontyHallAPI.Controllers;
 using MontyHallAPI.Models;
+using MontyHallAPI.Services;
 using System;
 using Microsoft.AspNetCore.Mvc;
 
@@ -50,7 +51,7 @@ namespace MontyHallTests.UnitTests.Controllers{
 
             var result = sut.Post(new Game(){NumberOfSimulations = 10 }) as ObjectResult;
             Assert.AreEqual(result.StatusCode, 500);
-            
+
             var simulationResult = result.Value as SimulationResult;
             Assert.IsNull(simulationResult);
         }
