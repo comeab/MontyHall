@@ -11,25 +11,27 @@ namespace MontyHallTests.UnitTests.Controllers{
     [TestFixture]
     public class SimulationControllerTests{
 
-        [Test]
-        public void Post_Game_ReturnsSimulationResults(){
+        [TestCase(100, 60)]
+        [TestCase(100, 33)]
+        [TestCase(1000000, 910000)]
+        public void Post_Game_ReturnsSimulationResults(int NumberOfSimulations, int nrWins){
             var mockSimulationService = new Mock<ISimulationService>();
-            mockSimulationService.Setup(service => service.RunSimulation(It.IsAny<int>(), It.IsAny<Boolean>(), It.IsAny<int>())).Returns(60);
+            mockSimulationService.Setup(service => service.RunSimulation(It.IsAny<int>(), It.IsAny<Boolean>(), It.IsAny<int>())).Returns(nrWins);
             var sut = new SimulationController(mockSimulationService.Object);
 
-            var result = sut.Post(new Game(){ NumberOfSimulations = 100, IsSwitching = true }) as OkObjectResult;
+            var result = sut.Post(new Game(){ NumberOfSimulations = NumberOfSimulations }) as OkObjectResult;
             Assert.IsInstanceOf<OkObjectResult>(result);
            
             var simulationResult = result.Value as SimulationResult;
+            Assert.AreEqual(simulationResult.numberOfWins, nrWins);
+            Assert.AreEqual(simulationResult.numberOfLosses, NumberOfSimulations - nrWins );
+            Assert.AreEqual(simulationResult.percentageOfWins, (decimal)(nrWins/NumberOfSimulations));
             Assert.AreEqual(simulationResult.NumberOfDoors, 3);
-            Assert.AreEqual(simulationResult.numberOfWins, 60);
-            Assert.AreEqual(simulationResult.numberOfLosses, 40);
-            Assert.AreEqual(simulationResult.percentageOfWins, 0.6);
         }
 
         
         [Test]
-        public void Post_NrSimulationsZero_Returns400(){
+        public void Post_NumberOfSimulationsIsZero_Returns400(){
             var mockSimulationService = new Mock<ISimulationService>();
             mockSimulationService.Setup(repo => repo.RunSimulation(It.IsAny<int>(), It.IsAny<Boolean>(), It.IsAny<int>())).Returns(10);
             var sut = new SimulationController(mockSimulationService.Object);
