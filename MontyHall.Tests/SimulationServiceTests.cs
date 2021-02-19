@@ -15,9 +15,6 @@ namespace MontyHall.UnitTests.Services
             _simulationService = new SimulationService();
         }
 
-        [TestCase(20)]
-        [TestCase(50)]
-        [TestCase(100)]
         [TestCase(1000)]
         [TestCase(1000000)]
         public void RunSimulation_IsSwitchingFalse_ReturnsLessOrEqualTo40Percent(int numberOfSimulations)
@@ -28,9 +25,6 @@ namespace MontyHall.UnitTests.Services
             Assert.IsInstanceOf<SimulationResult>(simulationResult);
         }
 
-        [TestCase(20)]
-        [TestCase(50)]
-        [TestCase(100)]
         [TestCase(1000)]
         [TestCase(1000000)]
         public void RunSimulation_IsSwitchingTrue_ReturnsMoreOrEqualTo60Percent(int numberOfSimulations)

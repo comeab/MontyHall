@@ -17,11 +17,10 @@ namespace MontyHallTests.UnitTests.Controllers{
         public void Post_Game_ReturnsSimulationResults(int NumberOfSimulations, int nrWins){
             
             var simulationResultObj = new SimulationResult() {
-                AvgWins = nrWins,
+                wins = nrWins,
                 percentageOfWins = (decimal)(nrWins/NumberOfSimulations), 
-                AvgLosses = NumberOfSimulations - nrWins,
+                losses = NumberOfSimulations - nrWins,
                 NumberOfDoors = 3,
-                NumberOfRunsPerTrial = 1000
             };
             var mockSimulationService = new Mock<ISimulationService>();
             mockSimulationService.Setup(service => service.RunSimulation(It.IsAny<int>(), It.IsAny<Boolean>(), It.IsAny<int>())).Returns(simulationResultObj);
@@ -31,11 +30,10 @@ namespace MontyHallTests.UnitTests.Controllers{
             Assert.IsInstanceOf<OkObjectResult>(result);
            
             var simulationResult = result.Value as SimulationResult;
-            Assert.GreaterOrEqual(simulationResult.AvgWins, nrWins);
-            Assert.GreaterOrEqual(simulationResult.AvgLosses, simulationResultObj.AvgLosses );
+            Assert.GreaterOrEqual(simulationResult.wins, nrWins);
+            Assert.GreaterOrEqual(simulationResult.losses, simulationResultObj.losses );
             Assert.GreaterOrEqual(simulationResult.percentageOfWins, simulationResultObj.percentageOfWins);
             Assert.AreEqual(simulationResult.NumberOfDoors, simulationResultObj.NumberOfDoors);
-            Assert.AreEqual(simulationResult.NumberOfRunsPerTrial, simulationResultObj.NumberOfRunsPerTrial);
         }
 
         

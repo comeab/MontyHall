@@ -8,7 +8,7 @@ namespace MontyHallAPI.Services
     public class SimulationService : ISimulationService
     {
         private enum DoorPrizeType { GOAT, CAR }
-        private int NumberOfRunsPerTrial = 1; 
+        private int seed = 1; 
         private Boolean HasUserWon(DoorPrizeType userFirstChoice, Boolean isSwitching)
         {
             if (!isSwitching) return (userFirstChoice == DoorPrizeType.CAR);
@@ -30,41 +30,30 @@ namespace MontyHallAPI.Services
             doors.OrderBy(x => new Random().Next());
         }
 
-        private int RunTrial(int numberOfSimulations, Boolean isSwitching, List<DoorPrizeType> doors){
-            int counterOfWinsPerTrial = 0;
+        public SimulationResult RunSimulation(int numberOfSimulations, Boolean isSwitching, int numberOfDoors = 3)
+        {
+            var doors = CreateListOfDoorsWithOneCarOnly(numberOfDoors);
             Random rnd = new Random();
-            for (int j = 0; j < numberOfSimulations; j++)
+            decimal counterOfWins = 0;
+
+            for (int i = 0; i < numberOfSimulations; i++)
             {
                 Shuffle(doors);
                 int userRandomDoor = rnd.Next(doors.Count);
                 var userFirstChoice = doors[userRandomDoor];
-
-                if (HasUserWon(userFirstChoice, isSwitching)) counterOfWinsPerTrial++;
-            }
-            return counterOfWinsPerTrial;
-        }
-        public SimulationResult RunSimulation(int numberOfSimulations, Boolean isSwitching, int numberOfDoors = 3)
-        {
-            var doors = CreateListOfDoorsWithOneCarOnly(numberOfDoors);
-           
-            decimal counterTotalWins = 0;
-            for (int i = 0; i < NumberOfRunsPerTrial; i++)
-            {
-                int counterOfWinsPerTrial = RunTrial(numberOfSimulations, isSwitching, doors);
-                counterTotalWins += counterOfWinsPerTrial;
+                if (HasUserWon(userFirstChoice, isSwitching)) counterOfWins++;
             }
 
-            var avgWins = counterTotalWins / NumberOfRunsPerTrial;
-            var percentageOfWins = avgWins / numberOfSimulations;
-            var numberOfLosses = numberOfSimulations - avgWins;
+            var wins = counterOfWins;
+            var percentageOfWins = wins / numberOfSimulations;
+            var lossess = numberOfSimulations - wins;
             
             return new SimulationResult()
             {
-                AvgWins = avgWins,
+                wins = wins,
                 percentageOfWins = percentageOfWins,
-                AvgLosses = numberOfLosses,
+                losses = lossess,
                 NumberOfDoors = numberOfDoors,
-                NumberOfRunsPerTrial = NumberOfRunsPerTrial,
                 NumberOfSimulations = numberOfSimulations
             };
         }
