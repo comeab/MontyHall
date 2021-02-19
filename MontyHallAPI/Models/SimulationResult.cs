@@ -5,11 +5,12 @@ namespace MontyHallAPI.Models
 {
     public class SimulationResult
     {
-        
-        public int numberOfWins{get;set;}
+        public decimal AvgWins{get;set;}
         public decimal percentageOfWins{get;set;} 
-        public int numberOfLosses{get;set;} 
+        public decimal AvgLosses{get;set;} 
         public int NumberOfDoors{get;set;}
+        public int NumberOfRunsPerTrial { get; set; }
+        public int NumberOfSimulations { get; set; }
 
     }
 }

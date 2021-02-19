@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using MontyHallAPI.Services;
+using MontyHallAPI.Models;
 
 namespace MontyHall.UnitTests.Services
 {
@@ -19,14 +20,12 @@ namespace MontyHall.UnitTests.Services
         [TestCase(100)]
         [TestCase(1000)]
         [TestCase(1000000)]
-        public void RunSimulation_IsSwitchingFalse_ReturnsLessOrEqualThanOneThird(int numberOfSimulations)
+        public void RunSimulation_IsSwitchingFalse_ReturnsLessOrEqualTo40Percent(int numberOfSimulations)
         {
-            var avg = 0;
-            for(int i=0; i<=10; i++){
-                avg+=_simulationService.RunSimulation(numberOfSimulations, false, 3);
-            }
-            //on average should be bellow 40%
-            Assert.LessOrEqual(avg/10, (decimal)(numberOfSimulations*0.4));
+            var simulationResult = _simulationService.RunSimulation(numberOfSimulations, false);
+            //Upper bound is 40%
+            Assert.LessOrEqual(simulationResult.percentageOfWins, 0.4);
+            Assert.IsInstanceOf<SimulationResult>(simulationResult);
         }
 
         [TestCase(20)]
@@ -34,14 +33,13 @@ namespace MontyHall.UnitTests.Services
         [TestCase(100)]
         [TestCase(1000)]
         [TestCase(1000000)]
-        public void RunSimulation_IsSwitchingTrue_ReturnsLessOrEqualThanOneThird(int numberOfSimulations)
+        public void RunSimulation_IsSwitchingTrue_ReturnsMoreOrEqualTo60Percent(int numberOfSimulations)
         {
-            var avg = 0;
-            for(int i=0; i<=10; i++){
-                avg+=_simulationService.RunSimulation(numberOfSimulations, true, 3);
-            }
-            //on average should be minimum 60%
-            Assert.GreaterOrEqual(avg/10, numberOfSimulations*0.6);
+            var simulationResult = _simulationService.RunSimulation(numberOfSimulations, true);
+            //Lower bound is 60%
+            Assert.GreaterOrEqual(simulationResult.percentageOfWins, 0.6);
+
+            Assert.IsInstanceOf<SimulationResult>(simulationResult);
         }
     }
 }

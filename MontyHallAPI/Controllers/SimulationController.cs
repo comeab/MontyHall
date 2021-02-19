@@ -22,17 +22,8 @@ namespace MontyHallAPI.Controllers
             {
                 if (game.NumberOfSimulations <= 0) return BadRequest("Number of simulations cannot be less or equal to zero");
 
-                var numberOfWins = _simulationService.RunSimulation(game.NumberOfSimulations, game.IsSwitching, game.NumberOfDoors);
-                var percentageOfWins = (decimal)(numberOfWins / game.NumberOfSimulations);
-                var numberOfLosses = game.NumberOfSimulations - numberOfWins;
-
-                return Ok(new SimulationResult
-                {
-                    numberOfWins = numberOfWins,
-                    percentageOfWins = percentageOfWins,
-                    numberOfLosses = numberOfLosses,
-                    NumberOfDoors = game.NumberOfDoors
-                });
+                var simulationResult = _simulationService.RunSimulation(game.NumberOfSimulations, game.IsSwitching, game.NumberOfDoors);
+                return Ok(simulationResult);
             }
             catch (Exception ex)
             {

@@ -1,9 +1,11 @@
 using System;
+using MontyHallAPI.Models;
+
 namespace MontyHallAPI.Services
 {
     public interface ISimulationService
     {
-        public int RunSimulation(int numberOfSimulations, Boolean isSwitching, int numberOfDoors);
+        public SimulationResult RunSimulation(int numberOfSimulations, Boolean isSwitching, int numberOfDoors);
     }
 
 }
